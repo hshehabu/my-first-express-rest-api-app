@@ -18,7 +18,7 @@ app.get("/api/courses", (req, res) => {
   res.send(courses);
 });
 app.get("/api/courses/:id", (req, res) => {
-  const course = courses.find((c) => c.id === parseInt(req.params.id));
+  const course = lookup(req.params.id);
   if (!course) res.status(404).send("no courses match with this id");
   res.send(course);
 });
@@ -41,7 +41,7 @@ app.post("/api/courses", function (req, res) {
 
 app.put("/api/courses/:id", (req, res) => {
   //look up the course
-  const course = courses.find((c) => c.id === parseInt(req.params.id));
+  const course = lookup(req.params.id);
   //if not
   if (!course) res.status(404).send("doesn't match any course");
   //if so
@@ -53,11 +53,26 @@ app.put("/api/courses/:id", (req, res) => {
   course.name = req.body.name;
   res.send(course);
 });
+
+app.delete("/api/courses/:id", (req, res) => {
+  const course = lookup(req.params.id);
+  if (!course) res.status(404).send("doesn't match any course");
+
+  const index = courses.indexOf(course);
+  courses.splice(index, 1);
+
+  res.send(course);
+});
 function validate(course) {
   const schema = {
     name: Joi.string().min(3).required(),
   };
   return Joi.validate(course, schema);
+}
+
+function lookup(id) {
+  const course = courses.find((c) => c.id == parseInt(id));
+  return course;
 }
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`listening at port ${port}`));
