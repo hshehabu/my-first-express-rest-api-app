@@ -19,17 +19,14 @@ app.get("/api/courses", (req, res) => {
 });
 app.get("/api/courses/:id", (req, res) => {
   const course = lookup(req.params.id);
-  if (!course) res.status(404).send("no courses match with this id");
+  if (!course) return res.status(404).send("no courses match with this id");
   res.send(course);
 });
 
 app.post("/api/courses", function (req, res) {
   const { error } = validate(req.body);
 
-  if (error) {
-    res.status(400).send(error.details[0].message);
-    return;
-  }
+  if (error) return res.status(400).send(error.details[0].message);
   const { name } = req.body;
   const course = {
     id: courses.length + 1,
@@ -43,20 +40,18 @@ app.put("/api/courses/:id", (req, res) => {
   //look up the course
   const course = lookup(req.params.id);
   //if not
-  if (!course) res.status(404).send("doesn't match any course");
+  if (!course) return res.status(404).send("doesn't match any course");
   //if so
   const { error } = validate(req.body);
-  if (error) {
-    res.status(400).send(error.details[0].message);
-    return;
-  }
+  if (error) return res.status(400).send(error.details[0].message);
+
   course.name = req.body.name;
   res.send(course);
 });
 
 app.delete("/api/courses/:id", (req, res) => {
   const course = lookup(req.params.id);
-  if (!course) res.status(404).send("doesn't match any course");
+  if (!course) return res.status(404).send("doesn't match any course");
 
   const index = courses.indexOf(course);
   courses.splice(index, 1);
