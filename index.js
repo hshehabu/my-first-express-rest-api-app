@@ -2,10 +2,13 @@ const express = require("express");
 const app = express();
 
 app.use(express.json());
+var bodyParser = require("body-parser");
+app.use(bodyParser.json());
+
 const courses = [
-  { id: 1, course: "amharic" },
-  { id: 2, course: "english" },
-  { id: 3, course: "biology" },
+  { id: 1, name: "amharic" },
+  { id: 2, name: "english" },
+  { id: 3, name: "biology" },
 ];
 app.get("/", (req, res) => {
   res.send("Hello world");
@@ -19,13 +22,18 @@ app.get("/api/courses/:id", (req, res) => {
   res.send(course);
 });
 
-
-app.post('/api/courses', (res, req) => {
+app.post("/api/courses", function (req, res) {
+  if (!req.body.name || req.body.name.length < 3) {
+    res.status(400).send("name is required and a minimum of 3 characters");
+    return;
+  }
+  const { name } = req.body;
   const course = {
     id: courses.length + 1,
-    course: req.body.course,
+    name: name,
   };
   courses.push(course);
+  res.send(course);
 });
 
 const port = process.env.PORT || 3000;
