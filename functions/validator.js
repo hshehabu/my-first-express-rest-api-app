@@ -6,4 +6,4 @@ function validate(course) {
     };
     return Joi.validate(course, schema);
   }
- export default validate;
+module.exports= validate;
