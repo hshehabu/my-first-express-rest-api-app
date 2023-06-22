@@ -1,0 +1,7 @@
+import courses from "../db";
+function lookup(id) {
+  const course = courses.find((c) => c.id == parseInt(id));
+  return course;
+}
+
+export default lookup;
