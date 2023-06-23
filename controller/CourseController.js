@@ -71,8 +71,8 @@ const deleteCourse = async (req, res) => {
       id: req.params.id,
     },
   });
-  console.log();
-  if (!course[0].id) return res.status(404).send("doesn't match any course");
+
+  if (!course[0] || !course[0].id) return res.status(404).send("doesn't match any course");
   await Course.destroy({
     where: {
       id: course[0].id,
