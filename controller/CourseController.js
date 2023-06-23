@@ -17,8 +17,13 @@ const openConnection = async () => {
   }
 };
 
-const getAllCourse = (req, res) => {
-
+const getAllCourse = async (req, res) => {
+  const courses = await Course
+    .findAll
+    // {
+    // attributes: ["name", [Sequelize.fn("COUNT", Sequelize.col("id")), "n_ids"]],
+    // }
+    ();
   res.send(courses);
 };
 const getCourse = (req, res) => {
@@ -31,7 +36,7 @@ const addCourse = async (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
   const { name } = req.body;
- 
+
   const course = await Course.create({ name: name });
   res.send(course);
 };
