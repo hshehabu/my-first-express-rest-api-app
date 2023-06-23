@@ -45,20 +45,26 @@ const addCourse = async (req, res) => {
 };
 const updateCourse = async (req, res) => {
   // const course = lookup(req.params.id);
-
+  const course = await Course.findAll({
+    where: {
+      id: req.params.id,
+    },
+  });
+  if (!course[0] || !course[0].id)
+  return res.status(404).send("doesn't match any course");
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
-  const course = await Course.update(
+
+  await Course.update(
     {
       name: req.body.name,
     },
     {
       where: {
-        id: req.params.id,
+        id: course[0].id,
       },
     }
   );
-  if (!course.id) return res.status(404).send("doesn't match any course");
 
   res.send(await Course.findAll());
 };
@@ -70,7 +76,8 @@ const deleteCourse = async (req, res) => {
     },
   });
 
-  if (!course[0] || !course[0].id) return res.status(404).send("doesn't match any course");
+  if (!course[0] || !course[0].id)
+    return res.status(404).send("doesn't match any course");
   await Course.destroy({
     where: {
       id: course[0].id,
