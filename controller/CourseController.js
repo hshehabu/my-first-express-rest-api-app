@@ -33,7 +33,7 @@ const getCourse = async (req, res) => {
       id: req.params.id,
     },
   });
-  if (!course) return res.status(404).send("no courses match with this id");
+  if (!course.id) return res.status(404).send("no courses match with this id");
   res.send(course);
 };
 const addCourse = async (req, res) => {
@@ -45,25 +45,36 @@ const addCourse = async (req, res) => {
   const course = await Course.create({ name: name });
   res.send(course);
 };
-const updateCourse = (req, res) => {
-  const course = lookup(req.params.id);
-
-  if (!course) return res.status(404).send("doesn't match any course");
+const updateCourse = async (req, res) => {
+  // const course = lookup(req.params.id);
 
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
+  const course = await Course.update(
+    {
+      name: req.body.name,
+    },
+    {
+      where: {
+        id: req.params.id,
+      },
+    }
+  );
+  if (!course.id) return res.status(404).send("doesn't match any course");
 
-  course.name = req.body.name;
-  res.send(course);
+  res.send(await Course.findAll());
 };
-const deleteCourse = (req, res) => {
-  const course = lookup(req.params.id);
-  if (!course) return res.status(404).send("doesn't match any course");
+const deleteCourse = async (req, res) => {
+  // const course = lookup(req.params.id);
 
-  const index = courses.indexOf(course);
-  courses.splice(index, 1);
+  const course = await Course.destroy({
+    where: {
+      id: req.params.id,
+    },
+  });
+  if (!course.id) return res.status(404).send("doesn't match any course");
 
-  res.send(course);
+  res.send(await Course.findAll());
 };
 
 module.exports = {
