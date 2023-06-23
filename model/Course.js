@@ -22,7 +22,6 @@ Course.init(
   },
   {
     sequelize,
-    timestamps: false,
   }
 );
 
