@@ -26,8 +26,13 @@ const getAllCourse = async (req, res) => {
     ();
   res.send(courses);
 };
-const getCourse = (req, res) => {
-  const course = lookup(req.params.id);
+const getCourse = async (req, res) => {
+  // const course = lookup(req.params.id);
+  const course = await Course.findAll({
+    where: {
+      id: req.params.id,
+    },
+  });
   if (!course) return res.status(404).send("no courses match with this id");
   res.send(course);
 };
