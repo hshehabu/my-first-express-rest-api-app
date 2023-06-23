@@ -1,8 +1,24 @@
-const courses= require("../db");
+const courses = require("../db");
 const lookup = require("../functions/lookup");
-const validate= require ("../functions/validator");
+const validate = require("../functions/validator");
+const Course = require("../model/Course");
+const { Sequelize } = require("sequelize");
+
+const openConnection = async () => {
+  const sequelize = new Sequelize("courses", "root", "", {
+    host: "localhost",
+    dialect: "mysql",
+  });
+  try {
+    await sequelize.authenticate();
+    console.log("connection established successfully");
+  } catch (error) {
+    console.error("unable to connect to the database:", error);
+  }
+};
 
 const getAllCourse = (req, res) => {
+
   res.send(courses);
 };
 const getCourse = (req, res) => {
@@ -10,16 +26,13 @@ const getCourse = (req, res) => {
   if (!course) return res.status(404).send("no courses match with this id");
   res.send(course);
 };
-const addCourse = (req, res) => {
+const addCourse = async (req, res) => {
   const { error } = validate(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);
   const { name } = req.body;
-  const course = {
-    id: courses.length + 1,
-    name: name,
-  };
-  courses.push(course);
+ 
+  const course = await Course.create({ name: name });
   res.send(course);
 };
 const updateCourse = (req, res) => {
@@ -49,4 +62,5 @@ module.exports = {
   addCourse,
   updateCourse,
   deleteCourse,
+  openConnection,
 };
