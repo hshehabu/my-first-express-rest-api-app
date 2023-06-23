@@ -22,6 +22,8 @@ Course.init(
   },
   {
     sequelize,
+    updatedAt: 'updated_at',
+    createdAt : 'created_at'
   }
 );
 
