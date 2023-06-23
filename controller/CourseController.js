@@ -66,13 +66,18 @@ const updateCourse = async (req, res) => {
 };
 const deleteCourse = async (req, res) => {
   // const course = lookup(req.params.id);
-
-  const course = await Course.destroy({
+  const course = await Course.findAll({
     where: {
       id: req.params.id,
     },
   });
-  if (!course.id) return res.status(404).send("doesn't match any course");
+  console.log();
+  if (!course[0].id) return res.status(404).send("doesn't match any course");
+  await Course.destroy({
+    where: {
+      id: course[0].id,
+    },
+  });
 
   res.send(await Course.findAll());
 };

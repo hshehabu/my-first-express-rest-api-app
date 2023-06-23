@@ -15,6 +15,6 @@ route.get("/courses", getAllCourse);
 route.get("/courses/:id", getCourse);
 route.post("/courses", addCourse);
 route.put("/courses/:id", updateCourse);
-route.post("/courses/:id", deleteCourse);
+route.delete("/courses/:id", deleteCourse);
 
 module.exports = route;
