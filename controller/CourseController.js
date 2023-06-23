@@ -1,5 +1,3 @@
-const courses = require("../db");
-const lookup = require("../functions/lookup");
 const validate = require("../functions/validator");
 const Course = require("../model/Course");
 const { Sequelize } = require("sequelize");
